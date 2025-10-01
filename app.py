@@ -24,7 +24,6 @@ from sklearn.tree import DecisionTreeClassifier
 from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
-import tensorflow as tf
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from flask_cors import CORS
