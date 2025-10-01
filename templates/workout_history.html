@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout History | Fitness Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        /* Unified Fitness Tracker Styles */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+
+        /* Card styling */
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Button styling */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            border: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #43cea2, #2bb673);
+            border: none;
+        }
+
+        .btn-outline-primary, .btn-outline-danger {
+            border: 2px solid;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            border-color: transparent;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #ff5252;
+            border-color: transparent;
+            color: white;
+        }
+
+        /* Table styling */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(67, 206, 162, 0.1);
+        }
+
+        .table thead th {
+            border-bottom: 2px solid #43cea2;
+            color: #185a9d;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include your navigation here -->
+    
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Your Workout History</h1>
+            <div>
+                <a href="{{ url_for('add_workout') }}" class="btn btn-success me-2">
+                    <i class="bi bi-plus-circle"></i> Add Workout
+                </a>
+                <a href="{{ url_for('workout_dashboard') }}" class="btn btn-primary">
+                    <i class="bi bi-graph-up"></i> Dashboard
+                </a>
+            </div>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% if workouts %}
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Exercise</th>
+                                    <th>Duration</th>
+                                    <th>Calories</th>
+                                    <th>Weight</th>
+                                    <th>Sets x Reps</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for workout in workouts %}
+                                <tr>
+                                    <td>{{ workout.date.strftime('%Y-%m-%d') if workout.date is not string else workout.date }}</td>
+                                    <td>{{ workout.exercise }}</td>
+                                    <td>{{ workout.duration }} min</td>
+                                    <td>{{ workout.calories if workout.calories else '-' }}</td>
+                                    <td>{{ workout.weight if workout.weight else '-' }}</td>
+                                    <td>
+                                        {% if workout.sets and workout.reps %}
+                                            {{ workout.sets }}x{{ workout.reps }}
+                                        {% elif workout.sets %}
+                                            {{ workout.sets }} sets
+                                        {% elif workout.reps %}
+                                            {{ workout.reps }} reps
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{{ url_for('edit_workout', workout_id=workout.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-danger delete-workout" data-id="{{ workout.id }}">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% if workout.notes %}
+                                <tr class="table-light">
+                                    <td colspan="7">
+                                        <strong>Notes:</strong> {{ workout.notes }}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <h4 class="alert-heading">No workouts found!</h4>
+                <p>You haven't recorded any workouts yet. Click the button below to add your first workout.</p>
+                <hr>
+                <div class="d-grid gap-2 col-md-4 mx-auto">
+                    <a href="{{ url_for('add_workout') }}" class="btn btn-primary">Add Your First Workout</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Delete workout functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-workout');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const workoutId = this.getAttribute('data-id');
+                    
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "This workout will be permanently deleted!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Send delete request
+                            fetch(`/delete_workout/${workoutId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        'Your workout has been deleted.',
+                                        'success'
+                                    ).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire(
+                                        'Error!',
+                                        data.message,
+                                        'error'
+                                    );
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

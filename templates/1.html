@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Analysis - Fitness Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        h1 {
+            color: #185a9d;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            border-bottom: none;
+            padding: 15px 20px;
+        }
+        
+        .bg-primary {
+            background: linear-gradient(135deg, #43cea2, #185a9d) !important;
+        }
+        
+        .bg-success {
+            background: linear-gradient(135deg, #43cea2, #28a745) !important;
+        }
+        
+        .bg-info {
+            background: linear-gradient(135deg, #0dcaf0, #185a9d) !important;
+        }
+        
+        .bg-warning {
+            background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        .stats-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+            color: #43cea2;
+        }
+        
+        .text-primary {
+            color: #185a9d !important;
+        }
+        
+        .text-success {
+            color: #43cea2 !important;
+        }
+        
+        .text-info {
+            color: #0dcaf0 !important;
+        }
+        
+        .text-warning {
+            color: #ffc107 !important;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: auto;
+            width: 100%;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chart-container img {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s;
+            object-fit: contain;
+        }
+        
+        .chart-container img:hover {
+            transform: scale(1.02);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-outline-primary {
+            color: #185a9d;
+            border-color: #185a9d;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #185a9d;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 15px;
+            border: none;
+            background-color: rgba(209, 236, 241, 0.7);
+            color: #0c5460;
+        }
+        
+        .border-left-primary, .border-left-warning, .border-left-success, .border-left-info {
+            border-left: 4px solid;
+            padding-left: 15px;
+        }
+        
+        .border-left-primary {
+            border-left-color: #185a9d;
+        }
+        
+        .border-left-warning {
+            border-left-color: #ffc107;
+        }
+        
+        .border-left-success {
+            border-left-color: #43cea2;
+        }
+        
+        .border-left-info {
+            border-left-color: #0dcaf0;
+        }
+        
+        .nav-container {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: flex-start;
+        }
+        
+        .nav-button {
+            background: rgba(255, 255, 255, 0.9);
+            color: #185a9d;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-button::before {
+            content: "←";
+            margin-right: 8px;
+        }
+        
+        .text-xs {
+            font-size: 0.875rem;
+        }
+        
+        .font-weight-bold {
+            font-weight: 700;
+        }
+        
+        .text-uppercase {
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .text-gray-800 {
+            color: #343a40;
+        }
+        
+        .mb-1 {
+            margin-bottom: 0.25rem;
+        }
+        
+        /* Added styles for better chart display */
+        .chart-card {
+            height: 100%;
+        }
+        
+        .most-frequent-foods-chart {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .most-frequent-foods-chart img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <a href="{{ url_for('dashboard') }}" class="nav-button">Go to Dashboard</a>
+    </div>
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-chart-pie"></i> Nutrition Analysis</h1>
+            <a href="{{ url_for('meal_tracker') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Back to Meal Tracker
+            </a>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body border-left-primary">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">7-Day Average Calories</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {% if nutrition_data.avg_calories %}
+                                        {{ nutrition_data.avg_calories }} kcal
+                                    {% else %}
+                                        No data
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-fire card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body border-left-success">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Most Common Food</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {% if nutrition_data.most_common_food %}
+                                        {{ nutrition_data.most_common_food }}
+                                    {% else %}
+                                        No data
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-utensils card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body border-left-info">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Protein Intake (Weekly Avg)</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {% if nutrition_data.avg_protein %}
+                                        {{ nutrition_data.avg_protein }} g
+                                    {% else %}
+                                        No data
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dumbbell card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Daily Calorie Chart -->
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow chart-card">
+                    <div class="card-header py-3 bg-primary text-white">
+                        <h6 class="m-0 font-weight-bold">Daily Calorie Intake</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            {% if nutrition_data.calories_chart %}
+                                <img src="data:image/png;base64,{{ nutrition_data.calories_chart }}" alt="Daily Calories Chart">
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> Not enough data to generate chart. Try adding more meals!
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Macronutrient Distribution -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow chart-card">
+                    <div class="card-header py-3 bg-success text-white">
+                        <h6 class="m-0 font-weight-bold">Macronutrient Distribution</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            {% if nutrition_data.macros_chart %}
+                                <img src="data:image/png;base64,{{ nutrition_data.macros_chart }}" alt="Macronutrient Distribution">
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> Not enough data to generate chart. Try adding more meals!
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Most Frequent Foods -->
+            <div class="col-lg-12 mb-4">
+                <div class="card shadow">
+                    <div class="card-header py-3 bg-info text-white">
+                        <h6 class="m-0 font-weight-bold">Most Frequent Foods</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="most-frequent-foods-chart">
+                            {% if nutrition_data.foods_chart %}
+                                <img src="data:image/png;base64,{{ nutrition_data.foods_chart }}" alt="Most Frequent Foods">
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> Not enough data to generate chart. Try adding more meals!
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nutrition Tips Section -->
+        <div class="card shadow mt-4">
+            <div class="card-header py-3 bg-warning text-dark">
+                <h6 class="m-0 font-weight-bold">Nutrition Tips</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body border-left-warning">
+                                <h5 class="card-title"><i class="fas fa-balance-scale text-warning"></i> Balanced Diet</h5>
+                                <p class="card-text">Aim for a macronutrient ratio of approximately 45-65% carbs, 10-35% protein, and 20-35% fat for a balanced diet.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body border-left-success">
+                                <h5 class="card-title"><i class="fas fa-apple-alt text-success"></i> Fruits & Vegetables</h5>
+                                <p class="card-text">Try to include at least 5 servings of fruits and vegetables in your daily diet for essential vitamins and minerals.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body border-left-info">
+                                <h5 class="card-title"><i class="fas fa-tint text-info"></i> Stay Hydrated</h5>
+                                <p class="card-text">Drink at least 8 glasses (64 oz) of water daily. Proper hydration is essential for metabolism and overall health.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

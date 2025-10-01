@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Meal - Fitness Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            color: white;
+            padding: 15px 20px;
+            border-bottom: none;
+        }
+        
+        .card-title {
+            font-weight: 700;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #43cea2;
+            box-shadow: 0 0 0 2px rgba(67, 206, 162, 0.2);
+            outline: none;
+        }
+        
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-color: #ddd;
+            color: #555;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        
+        .btn-secondary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .preview-container {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px dashed #43cea2;
+            border-radius: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .preview-container:hover {
+            border-color: #185a9d;
+        }
+        
+        #image-preview {
+            max-width: 100%;
+            max-height: 100%;
+            display: none;
+        }
+        
+        .placeholder-icon {
+            font-size: 48px;
+            color: #43cea2;
+        }
+        
+        .food-recognition-notification {
+            background-color: rgba(209, 236, 241, 0.7);
+            border-color: #bee5eb;
+            color: #0c5460;
+            border-radius: 8px;
+        }
+        
+        .nav-container {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: flex-start;
+        }
+        
+        .nav-button {
+            background: rgba(255, 255, 255, 0.9);
+            color: #185a9d;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-button::before {
+            content: "←";
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    
+   
+        <div class="card shadow">
+            <div class="card-header">
+                <h3 class="card-title mb-0"><i class="fas fa-plus"></i> Add a Meal</h3>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('add_meal') }}" method="post" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="meal_date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="meal_date" name="meal_date" value="{{ today_date }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="meal_type" class="form-label">Meal Type</label>
+                            <select class="form-select" id="meal_type" name="meal_type" required>
+                                <option value="">Select meal type</option>
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Dinner">Dinner</option>
+                                <option value="Snack">Snack</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="meal_image" class="form-label">Food Image (Optional)</label>
+                        <input type="file" class="form-control" id="meal_image" name="meal_image" accept="image/*">
+                        <div class="preview-container">
+                            <i class="fas fa-camera placeholder-icon"></i>
+                            <img id="image-preview">
+                        </div>
+                        <div class="alert food-recognition-notification" id="recognition-notice" style="display: none;">
+                            <i class="fas fa-magic"></i> Our AI can analyze your food image to estimate nutrition values!
+                        </div>
+                    </div>
+
+                    <input type="text" class="form-control" id="food_name" name="food_name" list="foodSuggestions" required>
+                    <datalist id="foodSuggestions"></datalist>
+                    
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="calories" class="form-label">Calories</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="calories" name="calories" min="0" step="1" required>
+                                <span class="input-group-text">kcal</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="protein" class="form-label">Protein</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="protein" name="protein" min="0" step="0.1">
+                                <span class="input-group-text">g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="carbs" class="form-label">Carbohydrates</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="carbs" name="carbs" min="0" step="0.1">
+                                <span class="input-group-text">g</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fat" class="form-label">Fat</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="fat" name="fat" min="0" step="0.1">
+                                <span class="input-group-text">g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes (Optional)</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('meal_tracker') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Meal</button>
+                    </div>
+                    <div class="nav-container">
+                        <a href="{{ url_for('dashboard') }}" class="nav-button">Go to Dashboard</a>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+   
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const calorieData = {
+            "rice": 130,
+            "bread": 80,
+            "apple": 52,
+            "banana": 89,
+            "chicken-breast": 165,
+            "egg": 78,
+            "dal": 150,
+            "sambar": 150,
+            "rasam": 100,
+            "chapathi": 200,
+            "idly": 100,
+            "chutney": 50,
+            "kurma": 200,
+            "vada": 250,
+            "bonda": 300,
+            "pongal": 200,
+            "lemonrice": 200,
+            "tamarind Rice": 200,
+            "mysorebonda": 300,
+            "vadapaw": 300,
+            "samyakeer": 200,
+            "gulabjamoon": 250,
+            "laddu": 300,
+            "breadhalwa": 300,
+            "sprouts": 50,
+            "orange": 60,
+            "papaya": 55,
+            "mango": 100,
+            "pumpkin": 45,
+            "watermelon": 45,
+            "cashews": 160,
+            "kissmis": 120,
+            "badam": 160,
+            "dates": 120,
+            "anjeera": 160,
+            "pista": 160,
+            "chiaseeds": 100,
+            "biriyani": 500,
+            
+    
+    'dosa': 250,
+    'masala dosa': 350,
+    'uttapam': 325,
+    'vada': 175,
+    'medu Vada': 175,
+    'pesarattu': 300,
+    'poha': 250,
+    'upma': 250,
+    'aloo paratha': 300,
+    'chole bhature': 700,
+    'aloo tikki': 175,
+    'besan chilla': 225,
+    'dhokla': 175,
+    'paratha': 300,
+    'keema Paratha': 400,
+    'methi Thepla': 300,
+    
+    'kachori': 300,
+    'rawa idli': 175,
+    'samosa chaat': 350,
+    'puri bhaji': 700,
+    'dahi vada': 225,
+    'sabudana khichdi': 300,
+    'egg paratha': 400,
+    'methi paratha': 300,
+    'moong dal chilla': 175,
+    'poha chivda': 300,
+    'vegetable sandwich': 250,
+    'corn paratha': 350,
+    'khasta kachori': 350,
+    'ragi dosa': 300,
+    'butter chicken': 500,
+    'chicken tikka masala': 500,
+    'palak paneer': 400,
+    'paneer tikka': 250,
+        'shahi paneer': 500,
+    'aloo gobi': 175,
+    'baingan bharta': 200,
+    'chole masala': 250,
+    'dal makhani': 375,
+    'rajma': 250,
+    'hyderabadi biryani': 350,
+    'pulao': 250,
+    'kadai paneer': 425,
+    'malai kofta': 500,
+    'rogan josh': 450,
+    'nihari': 500,
+    'methi malai chicken': 425,
+    'prawn masala': 300,
+    'goan fish curry': 350,
+    'chicken korma': 425,
+    'bhindi masala': 175,
+    'daal tadka': 175,
+    'vegetable korma': 350,
+    'vegetable jalfrezi': 200,
+    'mutton keema': 450,
+    'mutton rogan josh': 450,
+    'kadhi pakora': 375,
+    'dum aloo': 300,
+    'chana saag': 250,
+    'navratan korma': 350,
+    'achari paneer': 425,
+    'sarson da saag': 300,
+    'chole chaat': 300,
+    'egg curry': 300,
+    'bhindi do pyaza': 175,
+    'masoor dal': 175,
+    'malvani chicken curry': 425,
+    'Mutton Shami Kebab': 300,
+    'Prawn Curry': 300,
+    'Amritsari Macchi': 350,
+    'Baingan Mirchi Bharta': 200,
+    'Rajma Chawal': 425,
+    'Daal Chawal': 350,
+    'Korma': 425,
+    'Khichdi': 250,
+    'Samosa': 175,
+    'Pani Puri': 250,
+    'Bhel Puri': 200,
+    'Sev Puri': 250,
+    'Dahi Puri': 250,
+    'Vada Pav': 350,
+    'Pakora': 250,
+    'Chaat': 250,
+    'Pav Bhaji': 700,
+    'Corn and Cheese Balls': 350,
+    'Prawn Koliwada': 350,
+    'Onion Bhaji': 300,
+    'Vegetable Spring Rolls': 350,
+    'Paneer Pakora': 350,
+    'Bhakarwadi': 250,
+    'Pithla Bhakri': 350,
+    'Onion Pakora': 300,
+    'Chana Chaat': 250,
+    'Dahi Chaat': 250,
+    'Masala Papad': 175,
+    'Chana Samosa': 175,
+    'Aloo Pakora': 350,
+    'Fruit Chaat': 175,
+    'Naan': 275,
+    'Butter Naan': 325,
+    'Garlic Naan': 325,
+    'Roti': 175,
+    'Missi Roti': 225,
+    'Biryani': 350,
+    'Vegetable Biryani': 350,
+    'Chicken Biryani': 450,
+    'Jeera Rice': 250,
+    'Coconut Rice': 250,
+    'Curd Rice': 175,
+    'Sambhar Rice': 300,
+    'Tomato Rice': 250,
+    'Gulab Jamun': 250,
+    'Jalebi': 350,
+    'Rasgulla': 175,
+    'Rasmalai': 250,
+    'Kheer': 300,
+    'Gajar ka Halwa': 350,
+    'Moong Dal Halwa': 350,
+    'Besan Ladoo': 300,
+    'Barfi': 350,
+    'Sandesh': 250,
+    'Peda': 300,
+    'Sooji Halwa': 300,
+    'Khoya Barfi': 350,
+    'Kaju Katli': 350,
+    'Paan': 90,
+    'Mysore Pak': 350,
+    'Chenna Payesh': 300,
+    'Malpua': 300,
+    'Badam Halwa': 350,
+    'Jalebi with Rabri': 450,
+    'Thandai': 250,
+    'Shrikhand': 300,
+    'Chai': 85,
+    'Coffee': 125,
+    'Masala Chai': 125,
+    'Lassi': 175,
+    'Sweet Lassi': 225,
+    'Buttermilk': 125,
+    'Coconut Water': 55,
+    'Mango Lassi': 225,
+    
+    'Jaljeera': 125,
+    'Lemonade': 125,
+    'Badam Milk': 225,
+    'Tea with Milk': 125,
+    'Coffee with Milk': 175,
+    'Herbal Tea': 25,
+    'Cold Coffee': 175,
+    'Rose Milk': 225,
+    'Moong Dal Chilla': 175,
+    'Rawa Upma': 250,
+    'Rawa Idli': 175,
+    'Chana Dal Pancake': 225,
+    'Khaman Dhokla': 175,
+    'Egg Bhurji': 275,
+    'Bombay Sandwich': 250,
+    'Dosa with Chutney': 250,
+    'Vegetable Poha': 250,
+    'Chole Chana Chaat': 300,
+    'Methi Malai Kofta': 425,
+    'Aloo Baingan Curry': 250,
+    'Mutton Dhansak': 450,
+    'Bhindi Do Pyaza': 200,
+    'Daal Bukhara': 350,
+    'Gatte Ki Sabzi': 300,
+    'Chana Palak': 250,
+    'Rajma Galouti Kebab': 250,
+    'Prawn Malai Curry': 350,
+    'Mutton Shorba': 300,
+    'Lauki Kofta Curry': 350,
+    'Masala Fish': 300,
+    'Chicken Afghani': 425,
+    'Paneer Pasanda': 500,
+    'Lauki Chana Dal': 300,
+    'Biryani Pulao': 350,
+    'Kadhi Chawal': 400,
+    'Prawn Curry': 300,
+    'Achari Mutton': 425,
+    'Sarson Da Saag with Makki Di Roti': 450,
+    'Dahi Ke Kebab': 300,
+    'Moong Dal Chilla': 175,
+    'Chole Bhature': 700,
+    'Chole Tikki': 300,
+    'Onion Bhaji': 300,
+    'Pesarattu': 300,
+    'Corn and Cheese Balls': 350,
+    'Chana Chaat': 250,
+    'Kachori with Aloo Filling': 300,
+    'Vegetable Pakora': 250,
+    'Bhakarwadi': 250,
+    'Amritsari Kulcha': 300,
+    'Prawn Koliwada': 350,
+    'Bhel Puri with Aloo': 250,
+    'Dahi Puri': 250,
+    'Malai Tikka': 350,
+    'Veg Pakora': 250,
+    'Methi Pakora': 250,
+    'Pithla Bhakri': 350,
+    'Prawns Pakora': 350,
+    'Corn Chaat': 300,
+    'Lachha Paratha': 300,
+    'Stuffed Paratha': 350,
+    'Missi Roti': 225,
+    'Chappati': 175,
+    'Naan with Butter': 325,
+    'Garlic Naan': 325,
+    'Veg Pulao': 250,
+    'Chicken Biryani': 450,
+    'Jeera Rice': 250,
+    'Lemon Rice': 250,
+    'Coconut Rice': 250,
+    'Biryani with Raita': 400,
+    'Chicken Pulao': 350,
+    'Tomato Rice': 250,
+    'Khichdi': 250,
+    'Curd Rice': 175,
+    'Veg Biryani': 350,
+    'Badam Halwa': 350,
+    'Kalakand': 350,
+    'Malpua': 300,
+    'Chana Dal Halwa': 350,
+    'Curd with Honey': 175,
+    'Peda with Nuts': 300,
+    'Fruit Custard': 250,
+    'Lauki Ka Halwa': 300,
+    'Moong Dal Ladoo': 300,
+    'Chawal Ke Kheer': 300,
+    'Gajar Ka Halwa': 350,
+    'Coconut Ladoo': 250,
+    'Sabudana Kheer': 300,
+    'Suji Ka Halwa': 300,
+    'Sandesh': 250,
+    'Rawa Kesari': 300,
+    'Gulkand': 90,
+    'Filter Coffee': 90,
+    'Almond Milk': 175,
+    'Rose Milk': 225,
+    'Lassi with Flavors': 175,
+    'Masala Chaas': 125,
+    'Butter Milk': 125,
+    'Mango Smoothie': 225,
+    'Mint Lemonade': 125,
+    'Buttermilk with Masala': 125,
+    'Thandai': 250,
+    'Kesar Milk': 225,
+    'Khandvi': 175,
+    'Kesar Peda': 300,
+    'Dhokla with Green Chutney': 175,
+    'Poha with Peanuts': 250,
+    'Masala Dosa': 300,
+    'Idiyappam': 250,
+    'Appam': 250,
+    'Aloo Paratha with Curd': 400,
+    'Sabudana Khichdi': 250,
+    'Uttapam': 250,
+    'Bhutte Ka Kees': 250,
+    'Kakori Kebab': 300,
+    'Palak Paneer': 350,
+    'Dum Aloo': 300,
+    'Shahi Paneer': 425,
+    'Nihari': 450,
+    'Mutton Rogan Josh': 450,
+    'Vegetable Korma': 350,
+    'Lauki Chana Dal': 300,
+    'Keema Murg': 425,
+    'Baingan Bharta': 250,
+    'Kadhi Pakora': 350,
+    'Kuttu Ki Khichdi': 300,
+    'Chicken Xacuti': 350,
+    'Chole Masala': 350,
+    'Saag Aloo': 300,
+    'Rajma Galouti': 300,
+    'Aloo Methi': 250,
+    'Rajasthani Laal Maas': 425,
+    'Ghar Ka Chicken Curry': 425,
+    'Bhel Puri with Pomegranate': 250,
+    'Gathiya': 300,
+    'Stuffed Paneer Tikka': 350,
+    'Dahi Kebab': 300,
+    'Batata Vada': 175,
+    'Pesarattu with Ginger Chutney': 300,
+    'Chana Sundal': 250,
+    'Methi Thepla with Curd': 300,
+    'Bhutte Ka Kees': 250,
+    'Curd Vada': 250,
+    'Khandvi': 175,
+    'Bombay Sandwich': 250,
+    'Methi Malai Kofta': 425,
+    'Besan Chilla': 175,
+    'Tandoori Gobi': 250,
+    'Corn and Cheese Balls': 350,
+    'Masala Peanuts': 300,
+    'Dal Makhani Tikki': 350,
+    'Gobi Manchurian': 300,
+    'Prawn Tikka': 350,
+    'Falafel with Hummus': 350,
+    'Phulka': 175,
+    'Tandoori Roti': 175,
+    'Missi Roti': 225,
+    'Biryani with Raita': 400,
+    'Kadhi Chawal': 400,
+    'Hyderabadi Biryani': 450,
+    'Vegetable Pulao': 250,
+    'Chana Pulao': 350,
+    'Mutton Pulao': 425,
+    'Coconut Pulao': 250,
+    'Lemon Rice': 250,
+    'Curd Rice': 175,
+    'Jeera Rice': 250,
+    'Tamarind Rice': 300,
+    'Tomato Pulao': 250,
+    'Thums Up': 150,
+    'Sprite': 145,
+    'Pepsi': 155,
+    'Fanta': 155,
+    'Coca-Cola': 145,
+    'Limca': 145,
+    'Maaza': 175,
+    'Appy Fizz': 165,
+    'Ginger Ale': 145,
+    'Kool-Aid': 105,
+    'Minute Maid': 165,
+    'V8 Vegetable Juice': 80,
+    'Tropicana Juice': 135,
+    'Rooh Afza': 225,
+    'Shikanji': 175,
+    'Almond Milk': 175,
+    'Coconut Milk': 175,
+    'Soy Milk': 90,
+    'Skim Milk': 90,
+    'Whole Milk': 175,
+    'Evaporated Milk': 225,
+    'Condensed Milk': 135,
+    'Choco Milk': 225,
+    'Paneer': 350,
+    'Lassi (Salted)': 125,
+    'Buttermilk (Spiced)': 125,
+    'Sweetened Condensed Milk': 135,
+    'Rose Milk': 225,
+    'Kulfi': 300,
+    'Choco Bar': 225,
+    'Rabri': 350,
+    'Gulab Jamun': 175,
+    'Jalebi': 350,
+    'Churma': 350,
+    'Shahi Tukda': 350,
+    'Barfi': 350,
+    'Petha': 300,
+    'Laddoo': 350,
+    'Soan Papdi': 300,
+    'Ras Malai': 350,
+    'Motichoor Ladoo': 350,
+    'Kaju Katli': 350,
+    'Sandesh': 250,
+    'Besan Ladoo': 300,
+    'Halwa': 350,
+    'Phirni': 350,
+    'Cham Cham': 250,
+    'Rasgulla': 250,
+    'Shrikhand': 350,
+    'Kalakand': 350,
+    'Gajar Ka Halwa': 350,
+    'Rawa Ladoo': 300,
+    'Coconut Burfi': 300,
+    'Baklava': 425,
+    'Samosa': 300,
+    'Chaat Papdi': 350,
+    'Dahi Vada': 350,
+    'Aloo Tikki': 350,
+    'Masala Dosa': 350,
+    'Medu Vada': 300,
+    'Idli': 175,
+    'Dhokla': 175,
+    'Bhajiya': 300,
+    'Samosa': 300,
+    'Pakora': 300,
+    'Dosa': 250,
+    'Paneer Tikka': 300,
+    'Chole Bhature': 700,
+    'Roti': 175,
+    'Bread Butter': 150,
+    'Bread Jam': 150,
+    'Paneer Bhurji': 300,
+    'Chappati': 150,
+    'Poori Bhaji': 450,
+    'Vada Pav': 300,
+    'Sabudana Khichdi': 300,
+    'Dhokla': 150,
+    'Kachori': 200,
+    'Pav Bhaji': 400,
+    'Chole Kulche': 300,
+    'pav': 150
+        };
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            let today = new Date().toISOString().substr(0, 10);
+            document.getElementById('meal_date').value = today;
+    
+            const foodInput = document.getElementById('food_name');
+            const suggestionList = document.getElementById('foodSuggestions');
+            const calorieInput = document.getElementById('calories');
+            const proteinInput = document.getElementById('protein');
+            const carbsInput = document.getElementById('carbs');
+            const fatInput = document.getElementById('fat');
+    
+            // Populate suggestions initially
+            Object.keys(calorieData).forEach(food => {
+                const option = document.createElement('option');
+                option.value = food;
+                suggestionList.appendChild(option);
+            });
+    
+            // Auto-fill nutrition values based on selected food
+            foodInput.addEventListener('input', function () {
+                const food = foodInput.value.trim().toLowerCase();
+                const calories = calorieData[food];
+    
+                if (calories) {
+                    calorieInput.value = calories;
+                    proteinInput.value = ((0.2 * calories) / 4).toFixed(1);
+                    carbsInput.value = ((0.5 * calories) / 4).toFixed(1);
+                    fatInput.value = ((0.3 * calories) / 9).toFixed(1);
+                } else {
+                    calorieInput.value = '';
+                    proteinInput.value = '';
+                    carbsInput.value = '';
+                    fatInput.value = '';
+                }
+            });
+    
+            // Image preview
+            document.getElementById('meal_image').addEventListener('change', function (event) {
+                const preview = document.getElementById('image-preview');
+                const placeholder = document.querySelector('.placeholder-icon');
+                const recognitionNotice = document.getElementById('recognition-notice');
+    
+                if (event.target.files.length > 0) {
+                    const file = event.target.files[0];
+                    const reader = new FileReader();
+    
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        placeholder.style.display = 'none';
+                        recognitionNotice.style.display = 'block';
+                    };
+    
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.style.display = 'none';
+                    placeholder.style.display = 'block';
+                    recognitionNotice.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    
+    
+</body>
+</html>

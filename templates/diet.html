@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diet Recommendation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 40px;
+        }
+        
+        h2 {
+            color: #185a9d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 2.2rem;
+        }
+        
+        h5 {
+            color: #555;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        .table th, .table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+        
+        .table th {
+            background-color: rgba(67, 206, 162, 0.1);
+            color: #555;
+            font-weight: 600;
+            width: 40%;
+        }
+        
+        .highlight {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #43cea2;
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(67, 206, 162, 0.1);
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .alert {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            text-align: center;
+        }
+        
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-3 {
+            margin-top: 20px;
+        }
+        
+        .mt-4 {
+            margin-top: 25px;
+        }
+        
+        h4 {
+            color: #185a9d;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Your Personalized Diet Plan</h2>
+        
+        <!-- If error condition -->
+        <!-- <div class="alert alert-danger">Error message would appear here</div> -->
+        
+        <!-- If no error condition (default view) -->
+        <h5>User Profile</h5>
+        <table class="table">
+            <tr><th>Gender</th><td>{{ user.gender }}</td></tr>
+            <tr><th>Age</th><td>{{ user.age }}</td></tr>
+            <tr><th>Height</th><td>{{ user.height }} cm</td></tr>
+            <tr><th>Current Weight</th><td>{{ user.weight }} kg</td></tr>
+            <tr><th>Goal Weight</th><td>{{ user.dreamweight }} kg</td></tr>
+            <tr><th>Fitness Goal</th><td>{{ user.goal }}</td></tr>
+        </table>
+        
+        <h4 class="mt-4">Recommended Diet:</h4>
+        <p class="highlight">{{ diet }}</p>
+        
+        <div class="text-center mt-3">
+            <a href="/dashboard" class="btn">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

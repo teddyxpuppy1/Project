@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HydroTrack - Hydration Settings</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #43cea2, #185a9d);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: 900px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+    }
+    
+    .info-side {
+        flex: 1;
+        background: url('/static/img/water-bg.jpg') center/cover;
+        position: relative;
+        color: white;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .info-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+        z-index: 1;
+    }
+    
+    .info-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .info-side h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+    
+    .info-side p {
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+    
+    .benefits {
+        margin-top: 20px;
+    }
+    
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .benefit-icon {
+        width: 30px;
+        height: 30px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+    }
+    
+    .form-side {
+        flex: 1;
+        padding: 50px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .form-container {
+        max-width: 400px;
+        margin: 0 auto;
+        width: 100%;
+    }
+    
+    .tabs {
+        display: flex;
+        margin-bottom: 30px;
+    }
+    
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 15px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #777;
+        border-bottom: 2px solid #ddd;
+        transition: all 0.3s ease;
+    }
+    
+    .tab.active {
+        color: #43cea2;
+        border-bottom: 2px solid #43cea2;
+    }
+    
+    .form-section {
+        display: none;
+    }
+    
+    .form-section.active {
+        display: block;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #555;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: #43cea2;
+        box-shadow: 0 0 0 2px rgba(67, 206, 162, 0.2);
+        outline: none;
+    }
+    
+    .btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #43cea2, #185a9d);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .checkbox-group input {
+        margin-right: 8px;
+        width: 18px;
+        height: 18px;
+    }
+    
+    .water-log-section {
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid #eee;
+    }
+    
+    .water-stats {
+        margin-top: 30px;
+        background-color: rgba(67, 206, 162, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+    }
+    
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .hydration-progress {
+        margin-top: 20px;
+        height: 10px;
+        background-color: #eee;
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(135deg, #43cea2, #185a9d);
+        width: 65%;
+        border-radius: 5px;
+    }
+    
+    .alert {
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+    }
+    
+    .success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+    
+    .danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    
+    .info {
+        color: #0c5460;
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+    }
+    
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+        }
+        
+        .info-side {
+            padding: 30px;
+        }
+        
+        .form-side {
+            padding: 30px;
+        }
+    }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="info-side">
+      <div class="info-overlay"></div>
+      <div class="info-content">
+        <h1>Stay Hydrated</h1>
+        <p>Proper hydration is essential for your health and well-being. Set up your reminders and track your daily water intake.</p>
+        <div class="benefits">
+          <div class="benefit-item"><div class="benefit-icon">💧</div><span>Improved physical performance</span></div>
+          <div class="benefit-item"><div class="benefit-icon">💧</div><span>Enhanced brain function</span></div>
+          <div class="benefit-item"><div class="benefit-icon">💧</div><span>Better digestion and metabolism</span></div>
+          <div class="benefit-item"><div class="benefit-icon">💧</div><span>Healthier skin appearance</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-side">
+      <div class="form-container">
+        <div class="tabs">
+          <div class="tab active" id="settings-tab">Settings</div>
+          <div class="tab" id="log-tab">Log Water</div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="form-section active" id="settings-section">
+          <h2>Hydration Reminder Settings</h2>
+          <form method="POST" action="{{ url_for('hydration_settings') }}">
+            <div class="checkbox-group">
+              <input type="checkbox" name="enable_reminders" id="enable_reminders" {% if settings.enable %}checked{% endif %}>
+              <label for="enable_reminders">Enable Reminders</label>
+            </div>
+
+            <div class="form-group">
+              <label for="reminder_interval">Reminder Interval (minutes):</label>
+              <input type="number" id="reminder_interval" name="reminder_interval" class="form-control" value="{{ settings.interval }}" min="30" max="240" required>
+            </div>
+
+            <div class="form-group">
+              <label for="daily_goal">Daily Water Goal (ml):</label>
+              <input type="number" id="daily_goal" name="daily_goal" class="form-control" value="{{ settings.goal | default(2000) }}" min="500" max="5000" required>
+            </div>
+
+            <button type="submit" class="btn">Save Settings</button>
+          </form>
+        </div>
+
+        <!-- Log Tab -->
+        <div class="form-section" id="log-section">
+          <h2>Log Water Intake</h2>
+          <form method="POST" action="{{ url_for('log_water') }}">
+            <div class="form-group">
+              <label for="quantity_ml">Amount (ml):</label>
+              <input type="number" id="quantity_ml" name="quantity_ml" class="form-control" min="50" required placeholder="Enter water amount">
+            </div>
+
+            <div class="form-group">
+              <label for="water_type">Type:</label>
+              <select id="water_type" name="water_type" class="form-control">
+                <option value="water">Water</option>
+                <option value="sparkling">Sparkling Water</option>
+                <option value="tea">Tea</option>
+                <option value="coffee">Coffee</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn">Log Water</button>
+          </form>
+
+          <div class="water-stats">
+            <h3>Today's Progress</h3>
+            <div class="stat-item">
+              <span>Total intake:</span>
+              <span>{{ total_intake }} ml / {{ settings.goal | default(2000) }} ml</span>
+            </div>
+            <div class="stat-item">
+              <span>Remaining:</span>
+              <span>{{ settings.goal | default(2000) - total_intake }} ml</span>
+            </div>
+            <div class="hydration-progress">
+              <div class="progress-bar" style="width: {{ (total_intake / settings.goal | default(2000)) * 100 }}%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Switching Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const settingsTab = document.getElementById('settings-tab');
+      const logTab = document.getElementById('log-tab');
+      const settingsSection = document.getElementById('settings-section');
+      const logSection = document.getElementById('log-section');
+
+      settingsTab.addEventListener('click', function () {
+        settingsTab.classList.add('active');
+        logTab.classList.remove('active');
+        settingsSection.classList.add('active');
+        logSection.classList.remove('active');
+      });
+
+      logTab.addEventListener('click', function () {
+        logTab.classList.add('active');
+        settingsTab.classList.remove('active');
+        logSection.classList.add('active');
+        settingsSection.classList.remove('active');
+      });
+    });
+
+    // Hydration Reminder Notification
+    function startHydrationReminder(intervalMins) {
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
+
+      setInterval(() => {
+        if (Notification.permission === "granted") {
+          new Notification("💧 Time to drink water!", {
+            body: "Stay hydrated and log your intake!"
+          });
+        } else {
+          alert("💧 Time to drink water!");
+        }
+      }, intervalMins * 60 * 1000);
+    }
+
+    {% if settings.enable %}
+      startHydrationReminder({{ settings.interval }});
+    {% endif %}
+  </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitTrack - Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  
+</head>
+<body>
+  <header class="dashboard-header">
+    <div class="logo">
+      <h1>FitTrack</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#" class="active">Dashboard</a></li>
+        <li><a href="{{ url_for('diet') }}">Diet</a></li>
+        <li><a href="{{ url_for('predict', user_id=session['id']) }}">Workouts Schedule</a></li>
+        <li><a href="{{ url_for('prod') }}">Products</a></li>
+        <li><a href="{{ url_for('meal_tracker') }}">Meal Tracker</a></li>
+        <li><a href="{{ url_for('hydration_settings') }}">Hydration</a></li>
+        
+
+      </ul>
+    </nav>
+    <div class="user-menu">
+      <div class="user-info">
+        <span>Welcome, {{ name }}</span>
+      </div>
+      <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+  </header>
+
+  <main class="dashboard-content p-4">
+    <div class="welcome-banner">
+      <h2>Welcome to your fitness journey, {{ name }}!</h2>
+      <p>Track your diet, monitor your workouts, and achieve your health goals.</p>
+    </div>
+
+    <!-- User Info Form -->
+    <div class="user-info-form mb-4">
+      <h3>Update Your Fitness Profile</h3>
+      <form action="{{ url_for('save_user_info') }}" method="POST">
+        <label>Gender:
+          <input type="text" name="gender" placeholder="Enter gender" value="{{ info.gender or '' }}">
+        </label><br>
+        <label>Age:
+          <input type="number" name="age" placeholder="Enter age" value="{{ info.age or '' }}">
+        </label><br>
+        <label>Height (cm):
+          <input type="number" name="height" placeholder="Enter height in cm" value="{{ info.height or '' }}">
+        </label><br>
+        <label>Weight (kg):
+          <input type="number" name="weight" placeholder="Enter weight in kg" value="{{ info.weight or '' }}">
+        </label><br>
+        <label>Dream Weight (kg):
+          <input type="number" name="dream_weight" placeholder="Enter dream weight" value="{{ info.dream_weight or '' }}">
+        </label><br>
+        <label>Fitness Goal:
+          <input type="text" name="goal" placeholder="e.g., Build Muscle, Lose Fat" value="{{ info.goal or '' }}">
+        </label><br>
+        <button type="submit" class="btn btn-success mt-2">Save</button>
+      </form>
+    </div>
+
+    <!-- Daily Summary -->
+    
+    <div class="container py-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1>Workout Dashboard</h1>
+          <div>
+              <a href="{{ url_for('add_workout') }}" class="btn btn-success me-2">
+                  <i class="bi bi-plus-circle"></i> Add Workout
+              </a>
+              
+              <a href="{{ url_for('workout_history') }}" class="btn btn-outline-primary">
+                  <i class="bi bi-list-ul"></i> Workout History
+              </a>
+              
+          </div>
+      </div>
+    <!-- Workout Stats -->
+    {% if stats is defined %}
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card bg-primary text-white text-center p-3 mb-3">
+          <h5>Total Workouts</h5>
+          <h2>{{ stats.total_workouts or 0 }}</h2>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-success text-white text-center p-3 mb-3">
+          <h5>Total Duration</h5>
+          <h2>{{ stats.total_duration or 0 }} min</h2>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-danger text-white text-center p-3 mb-3">
+          <h5>Calories Burned</h5>
+          <h2>{{ stats.total_calories or 0 }}</h2>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-info text-white text-center p-3 mb-3">
+          <h5>Favorite Exercise</h5>
+          <h4>{{ stats.favorite_exercise or 'None' }}</h4>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Workout Graphs -->
+    {% if graphs is defined %}
+    <div class="row">
+      {% if graphs.calories_chart %}
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header bg-light"><strong>Calories Burned Over Time</strong></div>
+          <div class="card-body">
+            <img src="data:image/png;base64,{{ graphs.calories_chart }}" class="img-fluid" alt="Calories Burned Graph">
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% if graphs.duration_chart %}
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header bg-light"><strong>Duration by Exercise Type</strong></div>
+          <div class="card-body">
+            <img src="data:image/png;base64,{{ graphs.duration_chart }}" class="img-fluid" alt="Duration Chart">
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% if graphs.frequency_chart %}
+      <div class="col-md-12">
+        <div class="card mb-4">
+          <div class="card-header bg-light"><strong>Workout Frequency by Day</strong></div>
+          <div class="card-body">
+            <img src="data:image/png;base64,{{ graphs.frequency_chart }}" class="img-fluid" alt="Frequency Chart">
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if not graphs.calories_chart and not graphs.duration_chart and not graphs.frequency_chart %}
+    <div class="alert alert-warning text-center">
+      <h5>No charts available yet</h5>
+      <p>Add some workouts to start seeing your progress!</p>
+      <a href="{{ url_for('add_workout') }}" class="btn btn-primary">Add Workout</a>
+    </div>
+    {% endif %}
+    {% endif %}
+  </main>
+
+  <footer class="text-center py-3">
+    <p>&copy; 2025 FitTrack. All rights reserved.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

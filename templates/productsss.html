@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fitness Trackers by Price</title>
+    <style>
+        :root {
+          --primary-color: #43cea2;
+          --secondary-color: #185a9d;
+          --dark-color: #333333;
+          --light-color: #f8f9fa;
+          --gray-color: #6c757d;
+          --border-radius: 12px;
+          --box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+          --transition: all 0.3s ease;
+        }
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+          min-height: 100vh;
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 20px;
+        }
+        
+        .container {
+          width: 100%;
+          max-width: 1000px;
+          background-color: rgba(255, 255, 255, 0.95);
+          border-radius: var(--border-radius);
+          box-shadow: var(--box-shadow);
+          overflow: hidden;
+          padding: 40px;
+        }
+        
+        h1 {
+          font-size: 2.4rem;
+          margin-bottom: 30px;
+          color: var(--dark-color);
+          text-align: center;
+          background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          display: inline-block;
+          margin: 0 auto 30px;
+          width: 100%;
+          text-align: center;
+        }
+        
+        .nav-button {
+          display: inline-block;
+          padding: 12px 30px;
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+          border: none;
+          border-radius: 50px;
+          color: white;
+          font-size: 16px;
+          font-weight: 600;
+          text-decoration: none;
+          cursor: pointer;
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+          z-index: 1;
+          margin-bottom: 30px;
+        }
+        
+        .nav-button:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 0%;
+          height: 100%;
+          background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+          transition: all 0.4s;
+          z-index: -1;
+        }
+        
+        .nav-button:hover:before {
+          width: 100%;
+        }
+        
+        .nav-button:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-container {
+          text-align: center;
+          margin-bottom: 30px;
+        }
+        
+        form {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+          justify-content: center;
+          margin-bottom: 40px;
+        }
+        
+        .form-group {
+          position: relative;
+          flex: 1;
+          min-width: 200px;
+        }
+        
+        label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: 500;
+          color: var(--dark-color);
+        }
+        
+        input[type="number"] {
+          width: 100%;
+          padding: 15px;
+          border: 1px solid #ddd;
+          border-radius: 50px;
+          font-size: 16px;
+          transition: var(--transition);
+        }
+        
+        input[type="number"]:focus {
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(67, 206, 162, 0.2);
+          outline: none;
+        }
+        
+        button {
+          padding: 15px 40px;
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+          border: none;
+          border-radius: 50px;
+          color: white;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+          z-index: 1;
+          margin-top: 25px;
+        }
+        
+        button:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 0%;
+          height: 100%;
+          background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+          transition: all 0.4s;
+          z-index: -1;
+        }
+        
+        button:hover:before {
+          width: 100%;
+        }
+        
+        button:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+          color: var(--dark-color);
+          font-size: 1.8rem;
+          margin: 30px 0 20px;
+          text-align: center;
+        }
+        
+        .results {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 20px;
+        }
+        
+        .card {
+          background-color: white;
+          border-radius: var(--border-radius);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+          padding: 20px;
+          transition: var(--transition);
+        }
+        
+        .card:hover {
+          transform: translateY(-5px);
+          box-shadow: var(--box-shadow);
+        }
+        
+        .card h3 {
+          color: var(--dark-color);
+          margin-bottom: 15px;
+          font-size: 1.2rem;
+        }
+        
+        .card p {
+          margin-bottom: 10px;
+          color: var(--gray-color);
+        }
+        
+        .card p strong {
+          color: var(--dark-color);
+        }
+        
+        .no-results {
+          text-align: center;
+          color: var(--gray-color);
+          padding: 20px;
+          font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+          .container {
+            padding: 30px 20px;
+          }
+          
+          h1 {
+            font-size: 2rem;
+          }
+          
+          form {
+            flex-direction: column;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Find Fitness Trackers by Price Range</h1>
+        
+
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="min_price">Min Price:</label>
+                <input type="number" step="0.01" id="min_price" name="min_price" required>
+            </div>
+            <div class="form-group">
+                <label for="max_price">Max Price:</label>
+                <input type="number" step="0.01" id="max_price" name="max_price" required>
+            </div>
+            <button type="submit">Search</button>
+        </form>
+        <div class="nav-container">
+          <a href="{{ url_for('dashboard') }}" class="nav-button">Go to Dashboard</a>
+      </div>
+        {% if products %}
+        <h2>Results</h2>
+        <div class="results">
+            {% for item in products %}
+            <div class="card">
+                <h3>{{ item['Brand Name'] }} - {{ item['Model Name'] }}</h3>
+                <p><strong>Price:</strong>  ₹{{ item['Price'] }}</p>
+                <p><strong>Device Type:</strong> {{ item['Device Type'] }}</p>
+                <p><strong>Color:</strong> {{ item['Color'] }}</p>
+                <p><strong>Battery Life:</strong> {{ item['Average Battery Life (in days)'] }} days</p>
+                <p><strong>Rating:</strong> {{ item['Rating (Out of 5)'] }}/5</p>
+                <p><strong>Strap Material:</strong> {{ item['Strap Material'] }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% elif request.method == 'POST' %}
+        <p class="no-results">No products found in this range.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!-- templates/error.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitTrack - Error</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .error-container {
+      max-width: 500px;
+      text-align: center;
+      padding: 40px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .error-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+      color: #f44336;
+    }
+    
+    .error-message {
+      margin-bottom: 30px;
+      color: #555;
+    }
+    
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <div class="error-icon">⚠️</div>
+    <h1>Oops!</h1>
+    <p class="error-message">{{ error_message }}</p>
+    <a href="{{ url_for('index') }}" class="back-btn">Go Back Home</a>
+  </div>
+</body>
+</html>

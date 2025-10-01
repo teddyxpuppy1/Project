@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FitTrack - Your personal companion for diet tracking and fitness goals">
+  <title>FitTrack - Your Fitness Journey</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #43cea2;
+      --secondary-color: #185a9d;
+      --dark-color: #333333;
+      --light-color: #f8f9fa;
+      --gray-color: #6c757d;
+      --border-radius: 12px;
+      --box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+    }
+    
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      display: flex;
+    }
+    
+    .info-side {
+      flex: 1;
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('/api/placeholder/600/800');
+      background-position: center;
+      background-size: cover;
+      position: relative;
+      color: white;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .info-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .logo {
+      width: 120px;
+      margin-bottom: 30px;
+    }
+    
+    .info-side h1 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary-color), #a7ffeb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+    
+    .info-side p {
+      margin-bottom: 40px;
+      line-height: 1.7;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .benefits {
+      margin-top: 30px;
+    }
+    
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+    
+    .benefit-item:hover {
+      transform: translateX(5px);
+    }
+    
+    .benefit-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 16px;
+    }
+    
+    .benefit-text {
+      font-size: 1.1rem;
+    }
+    
+    .form-side {
+      flex: 1;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .form-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .form-header h2 {
+      color: var(--dark-color);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    
+    .form-header p {
+      color: var(--gray-color);
+    }
+    
+    .tabs {
+      display: flex;
+      margin-bottom: 30px;
+      background-color: #f1f3f5;
+      border-radius: 50px;
+      padding: 5px;
+    }
+    
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 15px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--gray-color);
+      border-radius: 50px;
+      transition: var(--transition);
+    }
+    
+    .tab.active {
+      color: white;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    .form-section {
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-section.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark-color);
+    }
+    
+    .input-group {
+      position: relative;
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-color);
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 15px 15px 15px 45px;
+      border: 1px solid #ddd;
+      border-radius: 50px;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 206, 162, 0.2);
+      outline: none;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 50px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      transition: all 0.4s;
+      z-index: -1;
+    }
+    
+    .btn:hover:before {
+      width: 100%;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .form-footer {
+      text-align: center;
+      margin-top: 30px;
+      color: var(--gray-color);
+    }
+    
+    .form-footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    
+    .form-footer a:hover {
+      color: var(--secondary-color);
+    }
+    
+    .social-login {
+      margin-top: 40px;
+    }
+    
+    .social-login-text {
+      text-align: center;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .social-login-text span {
+      background-color: white;
+      padding: 0 15px;
+      color: var(--gray-color);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .social-login-text:before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background-color: #ddd;
+      top: 50%;
+      left: 0;
+      z-index: 1;
+    }
+    
+    .social-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    .social-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 1.2rem;
+      color: var(--gray-color);
+    }
+    
+    .facebook { color: #3b5998; }
+    .google { color: #db4437; }
+    .linkedin { color: #0077b5; }
+    
+    .social-btn:hover {
+      background-color: #f5f5f5;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+    }
+    
+    .checkbox-group input {
+      margin-right: 8px;
+      accent-color: var(--primary-color);
+    }
+    
+    .forgot-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .forgot-link:hover {
+      color: var(--secondary-color);
+    }
+    
+    /* Alert styles */
+    .alert {
+      padding: 15px;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      border-left: 4px solid transparent;
+      display: flex;
+      align-items: center;
+      animation: slideIn 0.4s;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .alert-icon {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+    
+    .success {
+      color: #155724;
+      background-color: #d4edda;
+      border-color: #28a745;
+    }
+    
+    .danger {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #dc3545;
+    }
+    
+    .info {
+      color: #0c5460;
+      background-color: #d1ecf1;
+      border-color: #17a2b8;
+    }
+    
+    /* Password strength meter */
+    .password-strength {
+      height: 5px;
+      margin-top: 8px;
+      border-radius: 5px;
+      background-color: #ddd;
+      overflow: hidden;
+    }
+    
+    .strength-meter {
+      height: 100%;
+      width: 0%;
+      transition: var(--transition);
+    }
+    
+    .strength-text {
+      font-size: 12px;
+      margin-top: 5px;
+      text-align: right;
+    }
+    
+    .weak { width: 33%; background-color: #dc3545; }
+    .medium { width: 66%; background-color: #ffc107; }
+    .strong { width: 100%; background-color: #28a745; }
+    
+    /* Password visibility toggle */
+    .password-toggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--gray-color);
+      cursor: pointer;
+    }
+    
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+        max-width: 600px;
+      }
+      
+      .info-side {
+        padding: 40px 30px;
+      }
+      
+      .form-side {
+        padding: 40px 30px;
+      }
+    }
+    
+    @media (max-width: 500px) {
+      .info-side h1 {
+        font-size: 2.2rem;
+      }
+      
+      .info-side {
+        padding: 30px 20px;
+      }
+      
+      .form-side {
+        padding: 30px 20px;
+      }
+      
+      .social-buttons {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="info-side">
+      <div class="info-content">
+        <div class="logo">
+          <!-- SVG Logo -->
+          <svg width="120" height="40" viewBox="0 0 120 40">
+            <path d="M10,20 Q15,10 20,20 T30,20 T40,20" stroke="white" stroke-width="3" fill="none"/>
+            <text x="45" y="25" font-family="Arial" font-size="16" fill="white">FitTrack</text>
+          </svg>
+        </div>
+        <h1>Your Fitness Journey Starts Here</h1>
+        <p>Track your nutrition, monitor your workouts, and achieve your fitness goals with our comprehensive platform designed by fitness experts.</p>
+        
+        <div class="benefits">
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="fas fa-utensils"></i>
+            </div>
+            <div class="benefit-text">Track calories and macronutrients effortlessly</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+            <div class="benefit-text">Log workouts and monitor performance</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="benefit-text">Set goals and visualize your progress</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <div class="benefit-text">Get AI-powered health insights</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-side">
+      <div class="form-container">
+        <div class="form-header">
+          <h2>Welcome to FitTrack</h2>
+          <p>Your personal fitness companion</p>
+        </div>
+        
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">
+                <div class="alert-icon">
+                  {% if category == 'success' %}
+                    <i class="fas fa-check-circle"></i>
+                  {% elif category == 'danger' %}
+                    <i class="fas fa-exclamation-circle"></i>
+                  {% else %}
+                    <i class="fas fa-info-circle"></i>
+                  {% endif %}
+                </div>
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        
+        <div class="tabs">
+          <div class="tab {% if request.path == '/login' or request.path == '/' %}active{% endif %}" 
+               onclick="switchTab('login')">Login</div>
+          <div class="tab {% if request.path == '/signup' %}active{% endif %}" 
+               onclick="switchTab('signup')">Sign Up</div>
+        </div>
+        
+        <div id="login-form" class="form-section {% if request.path == '/login' or request.path == '/' %}active{% endif %}">
+          <form action="{{ url_for('login') }}" method="post" id="login-form-element">
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-envelope"></i>
+                <input type="email" id="login-email" name="login-email" class="form-control" placeholder="Enter your email" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-lock"></i>
+                <input type="password" id="login-password" name="login-password" class="form-control" placeholder="Enter your password" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('login-password')">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div class="remember-forgot">
+              <div class="checkbox-group">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Remember me</label>
+              </div>
+              <a href="{{ url_for('forgot_password') }}" class="forgot-link">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn">
+              <span>Login</span>
+            </button>
+          </form>
+          
+          <div class="social-login">
+            <div class="social-login-text">
+              <span>Or continue with</span>
+            </div>
+            <div class="social-buttons">
+              <div class="social-btn facebook" onclick="socialLogin('facebook')">
+                <i class="fab fa-facebook-f"></i>
+              </div>
+              <div class="social-btn google" onclick="socialLogin('google')">
+                <i class="fab fa-google"></i>
+              </div>
+              <div class="social-btn linkedin" onclick="socialLogin('linkedin')">
+                <i class="fab fa-linkedin-in"></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-footer">
+            Don't have an account? <a href="javascript:void(0)" onclick="switchTab('signup')">Sign up</a>
+          </div>
+        </div>
+        
+        <div id="signup-form" class="form-section {% if request.path == '/signup' %}active{% endif %}">
+          <form action="{{ url_for('signup') }}" method="post" id="signup-form-element">
+            <div class="form-group">
+              <label for="signup-name">Full Name</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-user"></i>
+                <input type="text" id="signup-name" name="signup-name" class="form-control" placeholder="Enter your full name" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="signup-email">Email Address</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-envelope"></i>
+                <input type="email" id="signup-email" name="signup-email" class="form-control" placeholder="Enter your email" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="signup-password">Password</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-lock"></i>
+                <input type="password" id="signup-password" name="signup-password" class="form-control" placeholder="Create a password" required onkeyup="checkPasswordStrength()">
+                <button type="button" class="password-toggle" onclick="togglePassword('signup-password')">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <div class="password-strength">
+                <div class="strength-meter" id="strength-meter"></div>
+              </div>
+              <div class="strength-text" id="strength-text"></div>
+            </div>
+            <div class="form-group">
+              <label for="signup-confirm">Confirm Password</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-lock"></i>
+                <input type="password" id="signup-confirm" name="signup-confirm" class="form-control" placeholder="Confirm your password" required onkeyup="checkPasswordMatch()">
+                <button type="button" class="password-toggle" onclick="togglePassword('signup-confirm')">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <div id="password-match" class="strength-text"></div>
+            </div>
+            <div class="checkbox-group" style="margin-bottom: 25px;">
+              <input type="checkbox" id="terms" name="terms" required>
+              <label for="terms">I agree to the <a href="#">Terms of Service</a> & <a href="#">Privacy Policy</a></label>
+            </div>
+            <button type="submit" class="btn">
+              <span>Create Account</span>
+            </button>
+          </form>
+          
+          <div class="form-footer">
+            Already have an account? <a href="javascript:void(0)" onclick="switchTab('login')">Log in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching functionality
+    function switchTab(tab) {
+      // Get all tabs and forms
+      const tabs = document.querySelectorAll('.tab');
+      const forms = document.querySelectorAll('.form-section');
+      
+      // Remove active class from all tabs and forms
+      tabs.forEach(t => t.classList.remove('active'));
+      forms.forEach(f => f.classList.remove('active'));
+      
+      // Add active class to selected tab and form
+      if (tab === 'login') {
+        document.querySelector('.tab:nth-child(1)').classList.add('active');
+        document.getElementById('login-form').classList.add('active');
+        // Change URL without page reload - using simple string to avoid Flask errors
+        history.pushState(null, null, '/login');
+      } else {
+        document.querySelector('.tab:nth-child(2)').classList.add('active');
+        document.getElementById('signup-form').classList.add('active');
+        // Change URL without page reload - using simple string to avoid Flask errors
+        history.pushState(null, null, '/signup');
+      }
+    }
+
+    // Password visibility toggle
+    function togglePassword(inputId) {
+      const passwordInput = document.getElementById(inputId);
+      const toggleButton = passwordInput.nextElementSibling;
+      const toggleIcon = toggleButton.querySelector('i');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
+    
+    // Password strength checker
+    function checkPasswordStrength() {
+      const password = document.getElementById('signup-password').value;
+      const meter = document.getElementById('strength-meter');
+      const text = document.getElementById('strength-text');
+      
+      // Remove all classes
+      meter.className = 'strength-meter';
+      
+      if (password.length === 0) {
+        meter.style.width = '0%';
+        text.textContent = '';
+        return;
+      }
+      
+      // Check password strength
+      let strength = 0;
+      
+      // Regular expressions to check password strength
+      const hasLowercase = /[a-z]/.test(password);
+      const hasUppercase = /[A-Z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      
+      // Add points for each criteria met
+      if (password.length >= 8) strength += 1;
+      if (hasLowercase && hasUppercase) strength += 1;
+      if (hasNumber) strength += 1;
+      if (hasSpecialChar) strength += 1;
+      
+      // Update meter based on strength
+      if (strength <= 2) {
+        meter.classList.add('weak');
+        text.textContent = 'Weak';
+        text.style.color = '#dc3545';
+      } else if (strength === 3) {
+        meter.classList.add('medium');
+        text.textContent = 'Medium';
+        text.style.color = '#ffc107';
+      } else {
+        meter.classList.add('strong');
+        text.textContent = 'Strong';
+        text.style.color = '#28a745';
+      }
+    }
+    
+    // Check if passwords match
+    function checkPasswordMatch() {
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm').value;
+      const matchText = document.getElementById('password-match');
+      
+      if (confirmPassword.length === 0) {
+        matchText.textContent = '';
+        return;
+      }
+      
+      if (password === confirmPassword) {
+        matchText.textContent = 'Passwords match';
+        matchText.style.color = '#28a745';
+      } else {
+        matchText.textContent = 'Passwords do not match';
+        matchText.style.color = '#dc3545';
+      }
+    }
+    
+    // Social login handler
+    function socialLogin(provider) {
+      console.log(`Logging in with ${provider}`);
+      // In production, this would redirect to OAuth endpoint
+    }
+
+    // Form validation
+    document.getElementById('signup-form-element').addEventListener('submit', function(event) {
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm').value;
+      
+      if (password !== confirmPassword) {
+        event.preventDefault();
+        alert('Passwords do not match!');
+      }
+    });
+
+    // Hide alerts after 5 seconds
+    const alerts = document.querySelectorAll('.alert');
+    if (alerts.length > 0) {
+      setTimeout(function() {
+        alerts.forEach(function(alert) {
+          alert.style.opacity = '0';
+          setTimeout(() => {
+            alert.style.display = 'none';
+          }, 500);
+        });
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

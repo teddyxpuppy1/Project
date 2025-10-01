@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weekly Workout Plan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .summary {
+            margin-bottom: 30px;
+        }
+
+        .summary p {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #444;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #43cea2;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        a:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🏋️ Weekly Workout Plan</h2>
+
+        <div class="summary">
+            
+            <p><strong>Actual Weight:</strong> {{ actual }} kg</p>
+            <p><strong>Dream Weight:</strong> {{ dream }} kg</p>
+            <p><strong>Estimated Days to Reach Goal:</strong> {{ prediction }} days</p>
+        </div>
+
+        <ul>
+            {% for day, activity in schedule.items() %}
+                <li><strong>{{ day.capitalize() }}:</strong> {{ activity }}</li>
+            {% endfor %}
+        </ul>
+
+        <a href="{{ url_for('dashboard') }}">Back</a>
+    </div>
+</body>
+</html>

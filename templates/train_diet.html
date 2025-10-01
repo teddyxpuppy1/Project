@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Train Diet Model</title>
+  <style>
+    body { font-family: Arial; background: #f0f2f5; padding: 30px; }
+    .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    h1 { color: #2c3e50; }
+    .success { color: green; }
+    .error { color: red; }
+    .btn { padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; }
+    .btn:hover { background: #2980b9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍽️ Train Diet Recommendation Model</h1>
+    {% if columns %}
+  <h3>🧾 Columns Detected in Dataset:</h3>
+  <ul>
+    {% for col in columns %}
+      <li>{{ col }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+    <a href="/train_diet_model" class="btn">🔁 Retrain Model Now</a>
+  </div>
+</body>
+</html>

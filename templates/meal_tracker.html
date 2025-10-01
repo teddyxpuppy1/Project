@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Tracker - Fitness Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+
+        .meal-card {
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .meal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .meal-image {
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .badge-macro {
+            margin-right: 5px;
+        }
+
+        .nav-container {
+            margin-bottom: 20px;
+        }
+
+        .nav-button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-weight: 700;
+        }
+
+        .btn-success, .btn-info {
+            border-radius: 8px;
+        }
+
+        .alert {
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-container">
+            <a href="{{ url_for('dashboard') }}" class="nav-button">Go to Dashboard</a>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-utensils text-primary"></i> Meal Tracker</h1>
+            <div>
+                <a href="{{ url_for('add_meal') }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add Meal
+                </a>
+                <a href="{{ url_for('meal_analysis') }}" class="btn btn-info ms-2">
+                    <i class="fas fa-chart-pie"></i> Nutrition Analysis
+                </a>
+            </div>
+        </div>
+
+        {% set current_date = '' %}
+        {% for meal in meals %}
+            {% if meal.date != current_date %}
+                {% if not loop.first %}</div>{% endif %}
+                <h3 class="mt-4 mb-3 text-primary">{{ meal.date }}</h3>
+                <div class="row">
+                {% set current_date = meal.date %}
+            {% endif %}
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card meal-card">
+                    {% if meal.image %}
+                    <img src="{{ url_for('static', filename=meal.image) }}" class="card-img-top meal-image" alt="{{ meal.food }}">
+                    {% else %}
+                    <div class="card-img-top meal-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="fas fa-utensils fa-3x text-secondary"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ meal.food }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ meal.type }}</h6>
+                        <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
+                            <span class="badge bg-danger"><i class="fas fa-fire"></i> {{ meal.calories }} kcal</span>
+                            <div>
+                                <span class="badge bg-primary badge-macro">P: {{ meal.protein }}g</span>
+                                <span class="badge bg-success badge-macro">C: {{ meal.carbs }}g</span>
+                                <span class="badge bg-warning text-dark badge-macro">F: {{ meal.fat }}g</span>
+                            </div>
+                        </div>
+                        {% if meal.notes %}
+                        <p class="card-text small text-muted mt-2">{{ meal.notes }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer d-flex justify-content-end">
+                        
+                        <form action="{{ url_for('delete_meal', meal_id=meal.id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this meal?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {% if loop.last %}</div>{% endif %}
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle"></i> You haven't added any meals yet. Click the "Add Meal" button to get started!
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
