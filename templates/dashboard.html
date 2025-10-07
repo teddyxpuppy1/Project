@@ -9,29 +9,238 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   
+  <style>
+    /* Responsive Adjustments */
+    .dashboard-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .dashboard-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .user-info-form form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .user-info-form form label {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .user-info-form form input {
+      width: 100%;
+      margin-top: 0.25rem;
+    }
+
+    .user-info-form form button {
+      grid-column: 1 / -1;
+    }
+
+    .d-flex.justify-content-between {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Tablet and below */
+    @media (max-width: 992px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      nav {
+        display: none;
+        width: 100%;
+        order: 4;
+      }
+
+      nav.active {
+        display: block;
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 0;
+        margin-top: 1rem;
+      }
+
+      nav ul li a {
+        display: block;
+        padding: 0.75rem 1rem;
+      }
+
+      .welcome-banner h2 {
+        font-size: 1.5rem;
+      }
+
+      .welcome-banner p {
+        font-size: 1rem;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .dashboard-content {
+        padding: 1rem !important;
+      }
+
+      .user-info-form form {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        width: 100%;
+      }
+
+      .action-buttons .btn {
+        flex: 1;
+        text-align: center;
+      }
+
+      .card.mb-4 {
+        margin-bottom: 1rem !important;
+      }
+
+      .row.mb-4 {
+        margin-bottom: 1rem !important;
+      }
+    }
+
+    /* Small Mobile */
+    @media (max-width: 576px) {
+      .logo h1 {
+        font-size: 1.25rem;
+      }
+
+      .welcome-banner {
+        padding: 1.25rem !important;
+      }
+
+      .welcome-banner h2 {
+        font-size: 1.25rem;
+      }
+
+      .welcome-banner p {
+        font-size: 0.9rem;
+      }
+
+      .user-info-form {
+        padding: 1.25rem !important;
+      }
+
+      .user-info-form h3 {
+        font-size: 1.25rem;
+      }
+
+      h1 {
+        font-size: 1.25rem !important;
+      }
+
+      .card h2 {
+        font-size: 1.75rem !important;
+      }
+
+      .card h4 {
+        font-size: 1rem !important;
+      }
+
+      .logout-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.875rem;
+      }
+
+      .user-info span {
+        font-size: 0.875rem;
+      }
+
+      .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+      }
+    }
+
+    /* Ensure images are responsive */
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Better spacing for stat cards on mobile */
+    @media (max-width: 576px) {
+      .col-md-3 {
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="dashboard-header">
-    <div class="logo">
-      <h1>FitTrack</h1>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#" class="active">Dashboard</a></li>
-        <li><a href="{{ url_for('diet') }}">Diet</a></li>
-        <li><a href="{{ url_for('predict', user_id=session['id']) }}">Workouts Schedule</a></li>
-        <li><a href="{{ url_for('prod') }}">Products</a></li>
-        <li><a href="{{ url_for('meal_tracker') }}">Meal Tracker</a></li>
-        <li><a href="{{ url_for('hydration_settings') }}">Hydration</a></li>
-        
-
-      </ul>
-    </nav>
-    <div class="user-menu">
-      <div class="user-info">
-        <span>Welcome, {{ name }}</span>
+    <div class="header-container">
+      <div class="logo">
+        <h1>FitTrack</h1>
       </div>
-      <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
+        <i class="bi bi-list"></i>
+      </button>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="#" class="active">Dashboard</a></li>
+          <li><a href="{{ url_for('diet') }}">Diet</a></li>
+          <li><a href="{{ url_for('predict', user_id=session['id']) }}">Workouts Schedule</a></li>
+          <li><a href="{{ url_for('prod') }}">Products</a></li>
+          <li><a href="{{ url_for('meal_tracker') }}">Meal Tracker</a></li>
+          <li><a href="{{ url_for('hydration_settings') }}">Hydration</a></li>
+        </ul>
+      </nav>
+      <div class="user-menu">
+        <div class="user-info">
+          <span>Welcome, {{ name }}</span>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+      </div>
     </div>
   </header>
 
@@ -47,115 +256,114 @@
       <form action="{{ url_for('save_user_info') }}" method="POST">
         <label>Gender:
           <input type="text" name="gender" placeholder="Enter gender" value="{{ info.gender or '' }}">
-        </label><br>
+        </label>
         <label>Age:
           <input type="number" name="age" placeholder="Enter age" value="{{ info.age or '' }}">
-        </label><br>
+        </label>
         <label>Height (cm):
           <input type="number" name="height" placeholder="Enter height in cm" value="{{ info.height or '' }}">
-        </label><br>
+        </label>
         <label>Weight (kg):
           <input type="number" name="weight" placeholder="Enter weight in kg" value="{{ info.weight or '' }}">
-        </label><br>
+        </label>
         <label>Dream Weight (kg):
           <input type="number" name="dream_weight" placeholder="Enter dream weight" value="{{ info.dream_weight or '' }}">
-        </label><br>
+        </label>
         <label>Fitness Goal:
           <input type="text" name="goal" placeholder="e.g., Build Muscle, Lose Fat" value="{{ info.goal or '' }}">
-        </label><br>
+        </label>
         <button type="submit" class="btn btn-success mt-2">Save</button>
       </form>
     </div>
 
     <!-- Daily Summary -->
-    
     <div class="container py-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
-          <h1>Workout Dashboard</h1>
-          <div>
-              <a href="{{ url_for('add_workout') }}" class="btn btn-success me-2">
-                  <i class="bi bi-plus-circle"></i> Add Workout
-              </a>
-              
-              <a href="{{ url_for('workout_history') }}" class="btn btn-outline-primary">
-                  <i class="bi bi-list-ul"></i> Workout History
-              </a>
-              
-          </div>
-      </div>
-    <!-- Workout Stats -->
-    {% if stats is defined %}
-    <div class="row mb-4">
-      <div class="col-md-3">
-        <div class="card bg-primary text-white text-center p-3 mb-3">
-          <h5>Total Workouts</h5>
-          <h2>{{ stats.total_workouts or 0 }}</h2>
+        <h1>Workout Dashboard</h1>
+        <div class="action-buttons">
+          <a href="{{ url_for('add_workout') }}" class="btn btn-success me-2">
+            <i class="bi bi-plus-circle"></i> Add Workout
+          </a>
+          <a href="{{ url_for('workout_history') }}" class="btn btn-outline-primary">
+            <i class="bi bi-list-ul"></i> Workout History
+          </a>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="card bg-success text-white text-center p-3 mb-3">
-          <h5>Total Duration</h5>
-          <h2>{{ stats.total_duration or 0 }} min</h2>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card bg-danger text-white text-center p-3 mb-3">
-          <h5>Calories Burned</h5>
-          <h2>{{ stats.total_calories or 0 }}</h2>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card bg-info text-white text-center p-3 mb-3">
-          <h5>Favorite Exercise</h5>
-          <h4>{{ stats.favorite_exercise or 'None' }}</h4>
-        </div>
-      </div>
-    </div>
-    {% endif %}
 
-    <!-- Workout Graphs -->
-    {% if graphs is defined %}
-    <div class="row">
-      {% if graphs.calories_chart %}
-      <div class="col-md-6">
-        <div class="card mb-4">
-          <div class="card-header bg-light"><strong>Calories Burned Over Time</strong></div>
-          <div class="card-body">
-            <img src="data:image/png;base64,{{ graphs.calories_chart }}" class="img-fluid" alt="Calories Burned Graph">
+      <!-- Workout Stats -->
+      {% if stats is defined %}
+      <div class="row mb-4">
+        <div class="col-md-3 col-sm-6">
+          <div class="card bg-primary text-white text-center p-3 mb-3">
+            <h5>Total Workouts</h5>
+            <h2>{{ stats.total_workouts or 0 }}</h2>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card bg-success text-white text-center p-3 mb-3">
+            <h5>Total Duration</h5>
+            <h2>{{ stats.total_duration or 0 }} min</h2>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card bg-danger text-white text-center p-3 mb-3">
+            <h5>Calories Burned</h5>
+            <h2>{{ stats.total_calories or 0 }}</h2>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card bg-info text-white text-center p-3 mb-3">
+            <h5>Favorite Exercise</h5>
+            <h4>{{ stats.favorite_exercise or 'None' }}</h4>
           </div>
         </div>
       </div>
       {% endif %}
-      {% if graphs.duration_chart %}
-      <div class="col-md-6">
-        <div class="card mb-4">
-          <div class="card-header bg-light"><strong>Duration by Exercise Type</strong></div>
-          <div class="card-body">
-            <img src="data:image/png;base64,{{ graphs.duration_chart }}" class="img-fluid" alt="Duration Chart">
-          </div>
-        </div>
-      </div>
-      {% endif %}
-      {% if graphs.frequency_chart %}
-      <div class="col-md-12">
-        <div class="card mb-4">
-          <div class="card-header bg-light"><strong>Workout Frequency by Day</strong></div>
-          <div class="card-body">
-            <img src="data:image/png;base64,{{ graphs.frequency_chart }}" class="img-fluid" alt="Frequency Chart">
-          </div>
-        </div>
-      </div>
-      {% endif %}
-    </div>
 
-    {% if not graphs.calories_chart and not graphs.duration_chart and not graphs.frequency_chart %}
-    <div class="alert alert-warning text-center">
-      <h5>No charts available yet</h5>
-      <p>Add some workouts to start seeing your progress!</p>
-      <a href="{{ url_for('add_workout') }}" class="btn btn-primary">Add Workout</a>
+      <!-- Workout Graphs -->
+      {% if graphs is defined %}
+      <div class="row">
+        {% if graphs.calories_chart %}
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header bg-light"><strong>Calories Burned Over Time</strong></div>
+            <div class="card-body">
+              <img src="data:image/png;base64,{{ graphs.calories_chart }}" class="img-fluid" alt="Calories Burned Graph">
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% if graphs.duration_chart %}
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header bg-light"><strong>Duration by Exercise Type</strong></div>
+            <div class="card-body">
+              <img src="data:image/png;base64,{{ graphs.duration_chart }}" class="img-fluid" alt="Duration Chart">
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% if graphs.frequency_chart %}
+        <div class="col-md-12">
+          <div class="card mb-4">
+            <div class="card-header bg-light"><strong>Workout Frequency by Day</strong></div>
+            <div class="card-body">
+              <img src="data:image/png;base64,{{ graphs.frequency_chart }}" class="img-fluid" alt="Frequency Chart">
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if not graphs.calories_chart and not graphs.duration_chart and not graphs.frequency_chart %}
+      <div class="alert alert-warning text-center">
+        <h5>No charts available yet</h5>
+        <p>Add some workouts to start seeing your progress!</p>
+        <a href="{{ url_for('add_workout') }}" class="btn btn-primary">Add Workout</a>
+      </div>
+      {% endif %}
+      {% endif %}
     </div>
-    {% endif %}
-    {% endif %}
   </main>
 
   <footer class="text-center py-3">
@@ -163,5 +371,29 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('mainNav');
+      nav.classList.toggle('active');
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const nav = document.getElementById('mainNav');
+      const toggle = document.querySelector('.menu-toggle');
+      
+      if (nav && toggle && !nav.contains(event.target) && !toggle.contains(event.target)) {
+        nav.classList.remove('active');
+      }
+    });
+
+    // Close menu when window is resized to desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 992) {
+        const nav = document.getElementById('mainNav');
+        if (nav) nav.classList.remove('active');
+      }
+    });
+  </script>
 </body>
 </html>
