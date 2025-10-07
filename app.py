@@ -683,8 +683,11 @@ def diet():
         user_info = user_info_collection.find_one({'user_id': user_id})
 
         if not user_info:
-            return render_template('diet.html', error="User profile not found")
+            # If no user profile, show message instead of error
+            flash("Please enter your details first", "info")
+            return render_template('diet.html', diet=None, user=None)
 
+        # If user exists, prepare data
         user_data = {
             'gender': user_info.get('gender', 'male'),
             'age': user_info.get('age', 25),
@@ -702,7 +705,8 @@ def diet():
 
     except Exception as e:
         print("❌ Error:", e)
-        return render_template('diet.html', error="Something went wrong.")
+        return render_template('diet.html', diet=None, user=None, error="Something went wrong.")
+
 
 def get_user_info(user_id):
     if not db_available:
